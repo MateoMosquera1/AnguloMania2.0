@@ -94,8 +94,15 @@ function mousePressed() {
   }
 }
 
+function keyPressed() {
+  if (modoJuego === "escribir" && keyCode === ENTER) {
+    evaluarRespuesta(respuestaUsuario.trim());
+  }
+}
+
 function evaluarRespuesta(respuesta) {
-  if (respuesta === tipoCorrecto || (modoJuego === "escribir" && parseInt(respuestaUsuario) === anguloActual)) {
+  if (respuesta.toLowerCase() === tipoCorrecto.toLowerCase() || 
+      (modoJuego === "escribir" && parseInt(respuesta) === anguloActual)) {
     puntaje++;
     niveles++;
     generarNuevoAngulo();
@@ -167,3 +174,4 @@ function mostrarRanking() {
     puntajes.map((p, i) => `${i + 1}. ${p.nombre}: ${p.puntos} pts`).join("<br>");
   tabla.style.display = "block";
 }
+
