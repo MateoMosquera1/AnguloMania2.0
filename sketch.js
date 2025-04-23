@@ -3,9 +3,7 @@ let opciones = ["Agudo", "Recto", "Obtuso", "Llano", "Completo"];
 let puntaje = 0, vidas = 3, tiempo = 15, timer;
 let nombreJugador = "";
 let niveles = 1;
-let modoJuego = "seleccion"; // Puede ser: seleccion, escribir, rotar
-let inputRespuesta, fondoNivel = ["#1e1e2f", "#3e2f4f", "#2e4f3f"];
-let respuestaUsuario = "";
+let modoJuego = "seleccion";
 
 function setup() {
   let canvas = createCanvas(windowWidth, windowHeight);
@@ -25,13 +23,11 @@ function setup() {
     location.reload();
   };
 
-  inputRespuesta = createInput('');
-  inputRespuesta.position(width / 2 - 50, height - 100);
-  inputRespuesta.size(100);
-  inputRespuesta.input(() => {
-    respuestaUsuario = inputRespuesta.value();
-  });
-  inputRespuesta.hide();
+  document.getElementById("btnEnviarRespuesta").onclick = () => {
+    let inputValor = document.getElementById("inputRespuestaTexto").value.trim();
+    evaluarRespuesta(inputValor);
+    document.getElementById("inputRespuestaTexto").value = "";
+  };
 }
 
 function iniciarJuego() {
@@ -44,7 +40,7 @@ function iniciarJuego() {
 }
 
 function draw() {
-  background(fondoNivel[niveles - 1] || "#000");
+  background("#1e1e2f");
 
   if (modo === "jugando") {
     fill(255);
@@ -53,10 +49,10 @@ function draw() {
 
     textSize(22);
     text(`¿Qué tipo de ángulo es este?`, width / 2, 70);
-    text(`${anguloActual}°`, width / 2, 100); // Mostrar el ángulo en grados
+    text(`${anguloActual}°`, width / 2, 100);
 
     push();
-    translate(width / 2, height / 2);
+    translate(width / 2, height / 2 + 30);
     stroke(255);
     strokeWeight(8);
     line(0, 0, 120, 0);
@@ -65,6 +61,7 @@ function draw() {
     pop();
 
     if (modoJuego === "seleccion") {
+      document.getElementById("respuestaBox").style.display = "none";
       textSize(18);
       for (let i = 0; i < opciones.length; i++) {
         fill(100, 200, 255);
@@ -72,12 +69,8 @@ function draw() {
         fill(0);
         text(opciones[i], 160 + i * 140, height - 130);
       }
-    }
-
-    inputRespuesta.style("display", modoJuego === "escribir" ? "block" : "none");
-
-    if (vidas <= 0) {
-      mostrarFinJuego();
+    } else if (modoJuego === "escribir") {
+      document.getElementById("respuestaBox").style.display = "block";
     }
   }
 }
@@ -94,26 +87,23 @@ function mousePressed() {
   }
 }
 
-function keyPressed() {
-  if (modoJuego === "escribir" && keyCode === ENTER) {
-    evaluarRespuesta(respuestaUsuario.trim());
-  }
-}
-
 function evaluarRespuesta(respuesta) {
-  if (respuesta.toLowerCase() === tipoCorrecto.toLowerCase() || 
-      (modoJuego === "escribir" && parseInt(respuesta) === anguloActual)) {
+  if (respuesta.toLowerCase() === tipoCorrecto.toLowerCase() || parseInt(respuesta) === anguloActual) {
     puntaje++;
     niveles++;
     generarNuevoAngulo();
     reiniciarTimer();
   } else {
     vidas--;
+    if (vidas <= 0) {
+      mostrarFinJuego();
+    }
   }
 }
 
 function generarNuevoAngulo() {
   modoJuego = niveles % 3 === 0 ? "escribir" : "seleccion";
+  document.getElementById("respuestaBox").style.display = "none";
 
   let tipo = random(opciones);
   tipoCorrecto = tipo;
@@ -125,9 +115,6 @@ function generarNuevoAngulo() {
     case "Llano": anguloActual = 180; break;
     case "Completo": anguloActual = 360; break;
   }
-
-  respuestaUsuario = "";
-  inputRespuesta.value('');
 }
 
 function iniciarTimer() {
@@ -141,6 +128,7 @@ function iniciarTimer() {
         tiempo = 15;
       } else {
         clearInterval(timer);
+        mostrarFinJuego();
       }
     }
   }, 1000);
@@ -154,7 +142,7 @@ function reiniciarTimer() {
 function mostrarFinJuego() {
   modo = "fin";
   clearInterval(timer);
-  inputRespuesta.hide();
+  document.getElementById("respuestaBox").style.display = "none";
   guardarPuntaje();
   mostrarRanking();
   document.getElementById("retryButton").style.display = "block";
@@ -174,4 +162,3 @@ function mostrarRanking() {
     puntajes.map((p, i) => `${i + 1}. ${p.nombre}: ${p.puntos} pts`).join("<br>");
   tabla.style.display = "block";
 }
-
