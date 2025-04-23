@@ -43,19 +43,23 @@ function iniciarJuego() {
 
 function draw() {
   background(fondoNivel[niveles - 1] || "#000");
-  
+
   if (modo === "jugando") {
     fill(255);
-    textSize(24);
-    text(`Nivel ${niveles} | ¿Qué tipo de ángulo es este?`, width / 2, 50);
-    
+    textSize(20);
+    text(`Nivel ${niveles} | Puntaje: ${puntaje} | Vidas: ${vidas} | Tiempo: ${tiempo}s`, width / 2, 30);
+
+    textSize(22);
+    text(`¿Qué tipo de ángulo es este?`, width / 2, 70);
+    text(`${anguloActual}°`, width / 2, 100); // Mostrar el ángulo en grados
+
     push();
     translate(width / 2, height / 2);
     stroke(255);
     strokeWeight(8);
-    line(0, 0, 100, 0);
+    line(0, 0, 120, 0);
     rotate(radians(anguloActual));
-    line(0, 0, 100, 0);
+    line(0, 0, 120, 0);
     pop();
 
     if (modoJuego === "seleccion") {
@@ -69,10 +73,6 @@ function draw() {
     }
 
     inputRespuesta.style("display", modoJuego === "escribir" ? "block" : "none");
-
-    textSize(20);
-    fill(255);
-    text(`Puntaje: ${puntaje} | Vidas: ${vidas} | Tiempo: ${tiempo}s`, width / 2, height - 40);
 
     if (vidas <= 0) {
       mostrarFinJuego();
