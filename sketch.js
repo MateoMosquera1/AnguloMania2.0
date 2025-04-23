@@ -16,6 +16,8 @@ function setup() {
     nombreJugador = document.getElementById("nameInput").value || "Anónimo";
     document.getElementById("nameInput").style.display = "none";
     document.getElementById("startButton").style.display = "none";
+    document.getElementById("tituloJuego").style.display = "none";
+    document.getElementById("creditos").style.display = "none";
     iniciarJuego();
   };
 
@@ -163,4 +165,5 @@ function mostrarRanking() {
   let puntajes = JSON.parse(localStorage.getItem("puntajes")) || [];
   tabla.innerHTML = `<strong>🏆 TOP 10 JUGADORES</strong><br><br>` +
     puntajes.map((p, i) => `${i + 1}. ${p.nombre}: ${p.puntos} pts`).join("<br>");
+  tabla.style.display = "block";
 }
