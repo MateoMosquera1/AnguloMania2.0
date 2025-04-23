@@ -1,38 +1,74 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <title>ÁnguloManía</title>
-    <script src="https://cdn.jsdelivr.net/npm/p5@1.6.0/lib/p5.min.js"></script>
-    <script src="sketch.js"></script>
-    <style>
-      html, body {
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        background-color: #1e1e2f;
-        font-family: sans-serif;
-      }
-
-      #startButton, #retryButton {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        padding: 15px 30px;
-        font-size: 20px;
-        border: none;
-        border-radius: 10px;
-        background-color: #4caf50;
-        color: white;
-        cursor: pointer;
-        display: none;
-        z-index: 10;
-      }
-    </style>
-  </head>
-  <body>
-    <button id="startButton">JUGAR</button>
-    <button id="retryButton">JUGAR DE NUEVO</button>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ÁnguloManía: Maestro del Giro</title>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.6.0/lib/p5.min.js"></script>
+  <script src="sketch.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: 'Press Start 2P', cursive;
+      background: linear-gradient(135deg, #1e1e2f, #2e2e4f);
+      color: white;
+    }
+    button {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 15px 30px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      background-color: #4caf50;
+      color: white;
+      cursor: pointer;
+      z-index: 10;
+    }
+    #startButton { top: 70%; }
+    #retryButton { top: 80%; display: none; }
+    #nameInput {
+      position: absolute;
+      top: 60%;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      z-index: 10;
+    }
+    #creditos {
+      position: absolute;
+      bottom: 20px;
+      width: 100%;
+      text-align: center;
+      font-size: 14px;
+      color: #ccc;
+    }
+    #tablaPuntajes {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: rgba(0,0,0,0.5);
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <input id="nameInput" type="text" placeholder="Ingresa tu nombre o apodo" />
+  <button id="startButton">JUGAR</button>
+  <button id="retryButton">JUGAR DE NUEVO</button>
+  <div id="creditos">
+    By: Mateo Cuesta, Hector Andres<br>
+    Fundación Universitaria María Cano
+  </div>
+  <div id="tablaPuntajes"></div>
+</body>
 </html>
