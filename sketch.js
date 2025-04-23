@@ -1,174 +1,166 @@
-let anguloObjetivo;
-let anguloJugador = 0;
-let puntaje = 0;
-let vidas = 3;
-let margenError = 15;
-let tiempoTotal = 10; // ahora da más tiempo
-let tiempoRestante;
-let tiempoInicial;
-let jugando = false;
-let estado = "inicio";
-let explicacion = "";
-
-const nombresAngulos = [
-  { nombre: "Agudo", rango: [10, 89], explicacion: "Un ángulo agudo mide menos de 90°." },
-  { nombre: "Recto", rango: [90, 90], explicacion: "Un ángulo recto mide exactamente 90°." },
-  { nombre: "Obtuso", rango: [91, 179], explicacion: "Un ángulo obtuso mide más de 90° y menos de 180°." },
-  { nombre: "Llano", rango: [180, 180], explicacion: "Un ángulo llano mide 180° y forma una línea recta." },
-  { nombre: "Completo", rango: [360, 360], explicacion: "Un ángulo completo da una vuelta entera (360°)." }
-];
+let anguloActual, tipoCorrecto, modo = "inicio";
+let opciones = ["Agudo", "Recto", "Obtuso", "Llano", "Completo"];
+let puntaje = 0, vidas = 3, tiempo = 15, timer;
+let nombreJugador = "";
+let niveles = 1;
+let modoJuego = "seleccion"; // Puede ser: seleccion, escribir, rotar
+let inputRespuesta, fondoNivel = ["#1e1e2f", "#3e2f4f", "#2e4f3f"];
+let respuestaUsuario = "";
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  let canvas = createCanvas(windowWidth, windowHeight);
+  canvas.parent(document.body);
   textAlign(CENTER, CENTER);
-  noLoop();
 
-  document.getElementById("startButton").onclick = comenzarJuego;
-  document.getElementById("retryButton").onclick = reiniciarJuego;
+  document.getElementById("startButton").onclick = () => {
+    nombreJugador = document.getElementById("nameInput").value || "Anónimo";
+    document.getElementById("nameInput").style.display = "none";
+    document.getElementById("startButton").style.display = "none";
+    iniciarJuego();
+  };
+
+  document.getElementById("retryButton").onclick = () => {
+    location.reload();
+  };
+
+  inputRespuesta = createInput('');
+  inputRespuesta.position(width / 2 - 50, height - 100);
+  inputRespuesta.size(100);
+  inputRespuesta.input(() => {
+    respuestaUsuario = inputRespuesta.value();
+  });
+  inputRespuesta.hide();
+}
+
+function iniciarJuego() {
+  modo = "jugando";
+  puntaje = 0;
+  vidas = 3;
+  niveles = 1;
+  generarNuevoAngulo();
+  iniciarTimer();
 }
 
 function draw() {
-  background(30, 30, 60);
-  fill(255);
-
-  if (estado === "inicio") {
-    textSize(36);
-    text("ÁnguloManía: Maestro del Giro", width / 2, height / 3);
-    textSize(20);
-    text("Usa las flechas ← y → para girar al ángulo pedido.\nTenés 10 segundos por intento.", width / 2, height / 2);
-    document.getElementById("startButton").style.display = "block";
-    return;
-  }
-
-  if (estado === "fin") {
-    textSize(36);
-    fill(255, 0, 0);
-    text("¡Juego Terminado!", width / 2, height / 2 - 40);
-    textSize(24);
+  background(fondoNivel[niveles - 1] || "#000");
+  
+  if (modo === "jugando") {
     fill(255);
-    text("Puntaje final: " + puntaje, width / 2, height / 2 + 10);
-    document.getElementById("retryButton").style.display = "block";
-    return;
-  }
+    textSize(24);
+    text(`Nivel ${niveles} | ¿Qué tipo de ángulo es este?`, width / 2, 50);
+    
+    push();
+    translate(width / 2, height / 2);
+    stroke(255);
+    strokeWeight(8);
+    line(0, 0, 100, 0);
+    rotate(radians(anguloActual));
+    line(0, 0, 100, 0);
+    pop();
 
-  if (estado === "explicacion") {
+    if (modoJuego === "seleccion") {
+      textSize(18);
+      for (let i = 0; i < opciones.length; i++) {
+        fill(100, 200, 255);
+        rect(100 + i * 140, height - 150, 120, 40, 10);
+        fill(0);
+        text(opciones[i], 160 + i * 140, height - 130);
+      }
+    }
+
+    inputRespuesta.style("display", modoJuego === "escribir" ? "block" : "none");
+
     textSize(20);
-    fill(255, 200, 100);
-    text(explicacion, width / 2, height - 160);
-  }
+    fill(255);
+    text(`Puntaje: ${puntaje} | Vidas: ${vidas} | Tiempo: ${tiempo}s`, width / 2, height - 40);
 
-  textSize(24);
-  fill(255);
-  text("Girá hasta: " + anguloObjetivo + "°", width / 2, 40);
-
-  // Ángulo visual
-  push();
-  translate(width / 2, height / 2);
-  stroke(255);
-  strokeWeight(10);
-  line(0, 0, 100, 0);
-  rotate(radians(anguloJugador));
-  line(0, 0, 100, 0);
-  pop();
-
-  // Info jugador
-  textSize(18);
-  fill(255);
-  text("Tu ángulo: " + int(anguloJugador) + "°", width / 2, height - 100);
-  text("Puntaje: " + puntaje + " | Vidas: " + vidas, width / 2, height - 60);
-
-  // Tiempo visual
-  let barra = map(tiempoRestante, 0, tiempoTotal, 0, width);
-  noStroke();
-  fill(tiempoRestante < 3 ? "red" : "lightgreen");
-  rect(0, 0, barra, 10);
-  textSize(16);
-  fill(200);
-  text("Tiempo: " + tiempoRestante.toFixed(1) + "s", width / 2, 20);
-
-  if (jugando) {
-    let tiempoActual = (millis() - tiempoInicial) / 1000;
-    tiempoRestante = tiempoTotal - tiempoActual;
-    if (tiempoRestante <= 0) {
-      verificarRespuesta();
+    if (vidas <= 0) {
+      mostrarFinJuego();
     }
   }
 }
 
-function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
-}
-
-function comenzarJuego() {
-  document.getElementById("startButton").style.display = "none";
-  estado = "jugando";
-  vidas = 3;
-  puntaje = 0;
-  margenError = 15;
-  anguloJugador = 0;
-  generarNuevoReto();
-  jugando = true;
-  loop();
-}
-
-function reiniciarJuego() {
-  document.getElementById("retryButton").style.display = "none";
-  estado = "jugando";
-  vidas = 3;
-  puntaje = 0;
-  margenError = 15;
-  anguloJugador = 0;
-  generarNuevoReto();
-  jugando = true;
-  loop();
-}
-
-function keyPressed() {
-  if (!jugando) return;
-
-  if (keyCode === LEFT_ARROW) {
-    anguloJugador -= 5;
-    if (anguloJugador < 0) anguloJugador += 360;
-  } else if (keyCode === RIGHT_ARROW) {
-    anguloJugador += 5;
-    if (anguloJugador >= 360) anguloJugador -= 360;
+function mousePressed() {
+  if (modoJuego === "seleccion") {
+    for (let i = 0; i < opciones.length; i++) {
+      let x = 100 + i * 140;
+      let y = height - 150;
+      if (mouseX > x && mouseX < x + 120 && mouseY > y && mouseY < y + 40) {
+        evaluarRespuesta(opciones[i]);
+      }
+    }
   }
 }
 
-function verificarRespuesta() {
-  jugando = false;
-  const diferencia = abs(anguloJugador - anguloObjetivo);
-  const esCorrecto = diferencia <= margenError || abs(diferencia - 360) <= margenError;
-
-  if (esCorrecto) {
+function evaluarRespuesta(respuesta) {
+  if (respuesta === tipoCorrecto || (modoJuego === "escribir" && parseInt(respuestaUsuario) === anguloActual)) {
     puntaje++;
-    if (puntaje % 3 === 0 && margenError > 3) {
-      margenError -= 2;
-    }
-    generarNuevoReto();
-    jugando = true;
+    niveles++;
+    generarNuevoAngulo();
+    reiniciarTimer();
   } else {
     vidas--;
-    let tipo = nombresAngulos.find(tipo => anguloObjetivo >= tipo.rango[0] && anguloObjetivo <= tipo.rango[1]);
-    explicacion = `Un ángulo de ${anguloObjetivo}° se llama '${tipo.nombre}': ${tipo.explicacion}`;
-
-    estado = "explicacion";
-    setTimeout(() => {
-      if (vidas <= 0) {
-        estado = "fin";
-        noLoop();
-      } else {
-        estado = "jugando";
-        generarNuevoReto();
-        jugando = true;
-      }
-    }, 3000);
   }
 }
 
-function generarNuevoReto() {
-  anguloJugador = 0;
-  anguloObjetivo = int(random(10, 360));
-  tiempoRestante = tiempoTotal;
-  tiempoInicial = millis();
+function generarNuevoAngulo() {
+  modoJuego = niveles % 3 === 0 ? "escribir" : "seleccion";
+
+  let tipo = random(opciones);
+  tipoCorrecto = tipo;
+
+  switch (tipo) {
+    case "Agudo": anguloActual = int(random(10, 89)); break;
+    case "Recto": anguloActual = 90; break;
+    case "Obtuso": anguloActual = int(random(91, 179)); break;
+    case "Llano": anguloActual = 180; break;
+    case "Completo": anguloActual = 360; break;
+  }
+
+  respuestaUsuario = "";
+  inputRespuesta.value('');
+}
+
+function iniciarTimer() {
+  tiempo = 15;
+  timer = setInterval(() => {
+    tiempo--;
+    if (tiempo <= 0) {
+      vidas--;
+      if (vidas > 0) {
+        generarNuevoAngulo();
+        tiempo = 15;
+      } else {
+        clearInterval(timer);
+      }
+    }
+  }, 1000);
+}
+
+function reiniciarTimer() {
+  clearInterval(timer);
+  iniciarTimer();
+}
+
+function mostrarFinJuego() {
+  modo = "fin";
+  clearInterval(timer);
+  inputRespuesta.hide();
+  guardarPuntaje();
+  mostrarRanking();
+  document.getElementById("retryButton").style.display = "block";
+}
+
+function guardarPuntaje() {
+  let puntajes = JSON.parse(localStorage.getItem("puntajes")) || [];
+  puntajes.push({ nombre: nombreJugador, puntos: puntaje });
+  puntajes.sort((a, b) => b.puntos - a.puntos);
+  localStorage.setItem("puntajes", JSON.stringify(puntajes.slice(0, 10)));
+}
+
+function mostrarRanking() {
+  let tabla = document.getElementById("tablaPuntajes");
+  let puntajes = JSON.parse(localStorage.getItem("puntajes")) || [];
+  tabla.innerHTML = `<strong>🏆 TOP 10 JUGADORES</strong><br><br>` +
+    puntajes.map((p, i) => `${i + 1}. ${p.nombre}: ${p.puntos} pts`).join("<br>");
 }
