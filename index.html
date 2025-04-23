@@ -1,21 +1,36 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <title>ÁnguloManía: El reto geométrico</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/addons/p5.sound.min.js"></script>
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-      background: black;
-      color: #00ffff;
-      font-family: 'Courier New', monospace;
-    }
-  </style>
-</head>
-<body>
-  <script src="sketch.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>ÁnguloManía</title>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.6.0/lib/p5.min.js"></script>
+    <script src="sketch.js"></script>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #1e1e2f;
+        color: white;
+        font-family: sans-serif;
+        overflow: hidden;
+      }
+      button {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 10px 20px;
+        font-size: 18px;
+        border: none;
+        border-radius: 8px;
+        background: #4caf50;
+        color: white;
+        cursor: pointer;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="startButton">JUGAR</button>
+    <button id="retryButton">JUGAR DE NUEVO</button>
+  </body>
 </html>
