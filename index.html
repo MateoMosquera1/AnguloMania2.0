@@ -2,68 +2,66 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ÁnguloManía</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"></script>
   <style>
     body {
       margin: 0;
-      font-family: 'Courier New', Courier, monospace;
-      background: linear-gradient(135deg, #1e1e2f, #2c2c54);
+      padding: 0;
+      font-family: "Segoe UI", sans-serif;
+      background-color: #1e1e2f;
       color: white;
       overflow: hidden;
     }
-    #interfazInicio, #tablaPuntajes, #retryButton {
-      position: absolute;
-      width: 100%;
+    #interfazInicio {
       text-align: center;
-      z-index: 10;
+      margin-top: 50px;
     }
-    #tituloJuego {
-      font-size: 48px;
-      font-weight: bold;
-      margin-top: 40px;
+    #respuestaBox, #tablaPuntajes, #retryButton {
+      display: none;
     }
-    #nameInput {
+    input, button {
       padding: 10px;
+      margin: 5px;
       font-size: 16px;
-      margin-top: 20px;
-    }
-    #startButton, #retryButton {
-      padding: 12px 24px;
-      margin-top: 20px;
-      font-size: 18px;
-      background-color: #00c3ff;
-      color: black;
+      border-radius: 8px;
       border: none;
-      border-radius: 10px;
+    }
+    #inputRespuestaTexto {
+      width: 250px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
       cursor: pointer;
     }
-    #creditos {
-      margin-top: 50px;
-      font-size: 14px;
-      color: #aaa;
+    button:hover {
+      background-color: #45a049;
     }
     #tablaPuntajes {
-      bottom: 100px;
+      margin-top: 30px;
+      text-align: center;
+      font-size: 18px;
     }
   </style>
 </head>
 <body>
   <div id="interfazInicio">
-    <div id="tituloJuego">ÁnguloManía</div>
-    <input id="nameInput" type="text" placeholder="Tu nombre o apodo"/>
-    <br/>
-    <button id="startButton">¡Jugar!</button>
-    <div id="creditos">
-      By: Mateo Cuesta, Hector Andres<br>
-      Fundación Universitaria María Cano
-    </div>
+    <h1 id="tituloJuego">🎮 ÁnguloManía</h1>
+    <input type="text" id="nameInput" placeholder="Escribe tu nombre o apodo" />
+    <br />
+    <button id="startButton">Iniciar juego</button>
+    <p id="creditos">By: Mateo Cuesta, Hector Andres <br />Fundación Universitaria María Cano</p>
   </div>
 
-  <div id="tablaPuntajes" style="display: none;"></div>
-  <button id="retryButton" style="display: none;">Jugar de nuevo</button>
+  <div id="respuestaBox">
+    <input id="inputRespuestaTexto" type="text" placeholder="Escribe la respuesta" />
+    <button id="btnEnviarRespuesta">Enviar</button>
+  </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"></script>
+  <div id="tablaPuntajes"></div>
+  <button id="retryButton" style="display: none;">🔁 Jugar de nuevo</button>
+
   <script src="sketch.js"></script>
 </body>
 </html>
