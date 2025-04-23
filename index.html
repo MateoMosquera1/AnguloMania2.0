@@ -2,74 +2,68 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ÁnguloManía: Maestro del Giro</title>
-  <script src="https://cdn.jsdelivr.net/npm/p5@1.6.0/lib/p5.min.js"></script>
-  <script src="sketch.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ÁnguloManía</title>
   <style>
-    html, body {
+    body {
       margin: 0;
-      padding: 0;
+      font-family: 'Courier New', Courier, monospace;
+      background: linear-gradient(135deg, #1e1e2f, #2c2c54);
+      color: white;
       overflow: hidden;
-      font-family: 'Press Start 2P', cursive;
-      background: linear-gradient(135deg, #1e1e2f, #2e2e4f);
-      color: white;
     }
-    button {
+    #interfazInicio, #tablaPuntajes, #retryButton {
       position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 15px 30px;
-      font-size: 16px;
-      border: none;
-      border-radius: 10px;
-      background-color: #4caf50;
-      color: white;
-      cursor: pointer;
-      z-index: 10;
-    }
-    #startButton { top: 70%; }
-    #retryButton { top: 80%; display: none; }
-    #nameInput {
-      position: absolute;
-      top: 60%;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 10px;
-      font-size: 16px;
-      border-radius: 8px;
-      z-index: 10;
-    }
-    #creditos {
-      position: absolute;
-      bottom: 20px;
       width: 100%;
       text-align: center;
+      z-index: 10;
+    }
+    #tituloJuego {
+      font-size: 48px;
+      font-weight: bold;
+      margin-top: 40px;
+    }
+    #nameInput {
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+    #startButton, #retryButton {
+      padding: 12px 24px;
+      margin-top: 20px;
+      font-size: 18px;
+      background-color: #00c3ff;
+      color: black;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    #creditos {
+      margin-top: 50px;
       font-size: 14px;
-      color: #ccc;
+      color: #aaa;
     }
     #tablaPuntajes {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background-color: rgba(0,0,0,0.5);
-      padding: 10px;
-      border-radius: 10px;
-      font-size: 12px;
+      bottom: 100px;
     }
   </style>
 </head>
 <body>
-  <input id="nameInput" type="text" placeholder="Ingresa tu nombre o apodo" />
-  <button id="startButton">JUGAR</button>
-  <button id="retryButton">JUGAR DE NUEVO</button>
-  <div id="creditos">
-    By: Mateo Cuesta, Hector Andres<br>
-    Fundación Universitaria María Cano
+  <div id="interfazInicio">
+    <div id="tituloJuego">ÁnguloManía</div>
+    <input id="nameInput" type="text" placeholder="Tu nombre o apodo"/>
+    <br/>
+    <button id="startButton">¡Jugar!</button>
+    <div id="creditos">
+      By: Mateo Cuesta, Hector Andres<br>
+      Fundación Universitaria María Cano
+    </div>
   </div>
-  <div id="tablaPuntajes"></div>
+
+  <div id="tablaPuntajes" style="display: none;"></div>
+  <button id="retryButton" style="display: none;">Jugar de nuevo</button>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"></script>
+  <script src="sketch.js"></script>
 </body>
 </html>
-
