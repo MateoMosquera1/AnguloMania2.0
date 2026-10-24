@@ -158,7 +158,7 @@ function guardarPuntaje() {
 function mostrarRanking() {
   let tabla = document.getElementById("tablaPuntajes");
   let puntajes = JSON.parse(localStorage.getItem("puntajes")) || [];
-  tabla.innerHTML = `<strong>🏆 TOP 10 JUGADORES</strong><br><br>` +
+  tabla.innerHTML = `<strong> TOP 10 JUGADORES</strong><br><br>` +
     puntajes.map((p, i) => `${i + 1}. ${p.nombre}: ${p.puntos} pts`).join("<br>");
   tabla.style.display = "block";
 }
